@@ -72,3 +72,26 @@ Generar reporte-documento.txt.
 Utilizar try-with-resources.
 
 Manejar adecuadamente IOException.
+
+# Respuestas a las preguntas de la práctica
+
+## Entrada, procesamiento y salida
+
+| Elemento | Descripción |
+|---|---|
+| Entrada | Archivo de texto (`datos/texto.txt`) cuyo nombre se recibe como argumento de la línea de comandos. |
+| Procesamiento | Leer línea por línea, pasar a minúsculas, eliminar signos de puntuación, separar en palabras y contabilizar las frecuencias en un `Map<String,Integer>`. |
+| Salida | Archivo de texto (`salida/frecuencias.txt` o `salida/reporte-documento.txt`) con las palabras ordenadas y sus frecuencias; también se muestra un resumen en consola. |
+
+**¿Flujo de bytes o de caracteres?**
+De caracteres. El archivo contiene texto (con acentos y ñ) y lo que interesa son palabras, no bytes individuales. `BufferedReader` y `PrintWriter` son flujos de caracteres: se encargan de decodificar/codificar con un juego de caracteres (UTF-8 por defecto en `Files.newBufferedReader`), permiten leer por líneas con `readLine()` y escribir con `printf`/`println`. Con flujos de bytes tendría que decodificar manualmente los caracteres multibyte (por ejemplo `ó`, `ñ`), lo cual es propenso a errores.
+
+ ## ¿Por qué recibir el nombre del archivo como argumento?
+
+- El programa es reutilizable: sirve para cualquier archivo sin recompilar.
+- Separa los datos de la lógica; el código no depende de una ruta fija que puede no existir en otra máquina.
+- Facilita las pruebas (distintos archivos, archivos inexistentes) y la automatización desde scripts.
+
+## ¿Qué ocurriría si no normalizamos las palabras?
+
+Se contarían como palabras distintas variantes de la misma palabra: `Java`, `JAVA`, `java` y `java.` serían cuatro claves diferentes en el `Map`. Las frecuencias quedarían fragmentadas, el total de palabras diferentes se inflaría y la "palabra más frecuente" podría ser incorrecta.
